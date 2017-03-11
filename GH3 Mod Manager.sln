@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GH3 Mod Manager", "GH3 Mod 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHero", "GuitarHero\GuitarHero.csproj", "{2EAA8156-3264-47EC-A932-E3340BE0FE65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHeroTests", "GuitarHeroTests\GuitarHeroTests.csproj", "{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2EAA8156-3264-47EC-A932-E3340BE0FE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EAA8156-3264-47EC-A932-E3340BE0FE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EAA8156-3264-47EC-A932-E3340BE0FE65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
