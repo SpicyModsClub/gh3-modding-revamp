@@ -1,6 +1,6 @@
-﻿namespace GH3_Mod_Manager
+﻿namespace GuitarHero.ModManager
 {
-    partial class Form1
+    partial class frmMain
     {
         /// <summary>
         /// Required designer variable.

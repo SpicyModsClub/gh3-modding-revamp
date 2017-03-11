@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GH3_Mod_Manager
+namespace GuitarHero.ModManager
 {
     static class Program
     {
@@ -15,7 +15,7 @@ namespace GH3_Mod_Manager
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new frmMain());
         }
     }
 }
