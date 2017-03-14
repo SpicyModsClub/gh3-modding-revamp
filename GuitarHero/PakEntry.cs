@@ -20,8 +20,8 @@ namespace GuitarHero
             this.sourceArchive = sourceArchive;
 
             FileType = new QbKey(0);
-            FileOffset = 0x20;
-            FileLength = 4;
+            FileOffset = 0;
+            FileLength = 0;
             EmbeddedFilenameKey = new QbKey(0);
             FileFullNameKey = new QbKey(0);
             FileShortNameKey = new QbKey(0);
