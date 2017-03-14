@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.HashFunction;
-using System.Text;
 
 namespace GuitarHero
 {
@@ -17,19 +16,17 @@ namespace GuitarHero
     /// </remarks>
     public class QbKey
     {
-        private static readonly Encoding Latin1;
         private static readonly CRC CrcGen;
 
         /// <summary>
         /// The CRC of this identifier
         /// </summary>
-        public UInt32 Checksum { get; private set; }
+        public UInt32 Checksum { get; }
 
         static QbKey()
         {
             var crcSettings = new CRC.Setting(32, CRC.DefaultSettings.Polynomial, 0xFFFFFFFF, true, true, 0);
             CrcGen = new CRC(crcSettings);
-            Latin1 = Encoding.GetEncoding("iso-8859-1");
         }
 
         /// <summary>
@@ -46,10 +43,36 @@ namespace GuitarHero
         /// Create a <see cref="QbKey"/> from a named identifier.
         /// </summary>
         /// <param name="name">The identifier's name</param>
-        public QbKey(string name)
+        /// <param name="normalize">Optional.  Whether to transform the identifier into a canonical form before computing the checksum.  Defaults to true.</param>
+        public QbKey(string name, bool normalize = true)
         {
-            var bytes = Latin1.GetBytes(name);
+            if (normalize)
+            {
+                name = Normalize(name);
+            }
+
+            var bytes = Utility.Latin1Encoding.GetBytes(name);
             this.Checksum = BitConverter.ToUInt32(CrcGen.ComputeHash(bytes), 0);
+        }
+
+        private static string Normalize(string original)
+        {
+            var result = original.ToLowerInvariant();
+            result = result.Replace('/', '\\');
+
+            return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as QbKey;
+
+            return this.Checksum == other?.Checksum;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Checksum.GetHashCode();
         }
     }
 }

@@ -23,8 +23,32 @@ namespace GuitarHero.PakExplorer
             var dialogResult = this.openFileDialog.ShowDialog();
             if (dialogResult == DialogResult.OK)
             {
+                var oldArchive = this.openArchive;
                 this.openArchive = PakFile.Open(this.openFileDialog.FileName);
+                oldArchive?.Dispose();
+                populateListView();
             }
+        }
+
+        private void populateListView()
+        {
+            this.SuspendLayout();
+            this.pakEntryListView.Items.Clear();
+
+            foreach (var entry in openArchive.Entries)
+            {
+                var filename = entry.FileShortNameKey.Checksum.ToString("X8");
+                var offset = entry.FileOffset.ToString("X8");
+                var length = entry.FileLength.ToString();
+                var filetype = entry.FileType.Checksum.ToString("X8");
+                var path = entry.FileFullNameKey.Checksum.ToString("X8");
+
+                var item = new ListViewItem(new[] { filename, offset, length, filetype, path });
+
+                this.pakEntryListView.Items.Add(item);
+            }
+
+            this.ResumeLayout();
         }
 
         /// <summary>
@@ -34,10 +58,14 @@ namespace GuitarHero.PakExplorer
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 components?.Dispose();
-                this.openArchive.Dispose();
+                this.openArchive?.Dispose();
             }
             base.Dispose(disposing);
         }
 
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
