@@ -55,7 +55,7 @@ namespace GuitarHero
             this.Checksum = BitConverter.ToUInt32(CrcGen.ComputeHash(bytes), 0);
         }
 
-        private static string Normalize(string original)
+        public static string Normalize(string original)
         {
             var result = original.ToLowerInvariant();
             result = result.Replace('/', '\\');
