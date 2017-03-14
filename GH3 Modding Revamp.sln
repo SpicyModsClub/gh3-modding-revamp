@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GH3 Mod Manager", "GH3 Mod Manager\GH3 Mod Manager.csproj", "{7B806F81-76CF-4852-B1AA-BAD106146F21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHero.ModManager", "GH3 Mod Manager\GuitarHero.ModManager.csproj", "{7B806F81-76CF-4852-B1AA-BAD106146F21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHero", "GuitarHero\GuitarHero.csproj", "{2EAA8156-3264-47EC-A932-E3340BE0FE65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHeroTests", "GuitarHeroTests\GuitarHeroTests.csproj", "{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarHero.PakExplorer", "PakExplorer\GuitarHero.PakExplorer.csproj", "{3811D839-81BF-4AFE-963E-B73144C72DC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CF74A08-E2F5-4DC5-BC49-9B9A31F869B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3811D839-81BF-4AFE-963E-B73144C72DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3811D839-81BF-4AFE-963E-B73144C72DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3811D839-81BF-4AFE-963E-B73144C72DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3811D839-81BF-4AFE-963E-B73144C72DC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
