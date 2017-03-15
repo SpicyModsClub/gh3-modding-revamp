@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using MiscUtil.IO;
 
@@ -128,7 +129,16 @@ namespace GuitarHero
             set
             {
                 this._flags = value;
-                if (!value.HasFlag(PakEntryFlags.HasEmbeddedFilename))
+                if (value.HasFlag(PakEntryFlags.HasEmbeddedFilename))
+                {
+                    if (this._embeddedFilename == null)
+                    {
+                        this._embeddedFilename = "";
+                        this.EmbeddedFilenameKey = this.FileFullNameKey;
+                        this.FileFullNameKey = new QbKey(0);
+                    }
+                }
+                else
                 {
                     clearEmbeddedFilename();
                 }
@@ -153,6 +163,10 @@ namespace GuitarHero
                     this._embeddedFilename = value;
                     this.EmbeddedFilenameKey = new QbKey(value);
                     this.FileFullNameKey = new QbKey(0);
+                    this._flags |= PakEntryFlags.HasEmbeddedFilename;
+
+                    var shortName = Path.GetFileNameWithoutExtension(value);
+                    this.FileShortNameKey = new QbKey(shortName);
                 }
             }
         }

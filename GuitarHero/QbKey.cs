@@ -74,5 +74,10 @@ namespace GuitarHero
         {
             return this.Checksum.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return "$" + Checksum.ToString("X8");
+        }
     }
 }
