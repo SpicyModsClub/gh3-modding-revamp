@@ -21,7 +21,8 @@ namespace GuitarHero
             this.sourceArchive = sourceArchive;
 
             FileType = new QbKey(0);
-            FileOffset = 0;
+            HeaderOffset = 0;
+            FileOffsetRelative = 0;
             FileLength = 0;
             EmbeddedFilenameKey = new QbKey(0);
             FileFullNameKey = new QbKey(0);
@@ -47,8 +48,9 @@ namespace GuitarHero
         internal static PakEntry ParseHeader(EndianBinaryReader br, PakArchive sourceArchive)
         {
             var result = new PakEntry(sourceArchive);
+            result.HeaderOffset = (UInt32)br.BaseStream.Position;
             result.FileType = new QbKey(br.ReadUInt32());
-            result.FileOffset = br.ReadUInt32();
+            result.FileOffsetRelative = br.ReadUInt32();
             result.FileLength = br.ReadUInt32();
             result.EmbeddedFilenameKey = new QbKey(br.ReadUInt32());
             result.FileFullNameKey = new QbKey(br.ReadUInt32());
@@ -64,6 +66,29 @@ namespace GuitarHero
 
             return result;
         }
+
+
+        internal void WriteHeaderTo(EndianBinaryWriter bw) {
+            bw.Write(this.FileType.Checksum);
+            bw.Write(this.FileOffsetRelative);
+            bw.Write(this.FileLength);
+            bw.Write(this.EmbeddedFilenameKey.Checksum);
+            bw.Write(this.FileFullNameKey.Checksum);
+            bw.Write(this.FileShortNameKey.Checksum);
+            bw.Write(this.Unknown);
+            bw.Write((UInt32)this.Flags);
+
+            if (this.EmbeddedFilename != null)
+            {
+                var embedNameBytes = Utility.Latin1Encoding.GetBytes(this.EmbeddedFilename);
+                bw.Write(embedNameBytes);
+            }
+        }
+
+        /// <summary>
+        /// The offset of this header, measured in bytes from the start of the PAK archive.
+        /// </summary>
+        internal UInt32 HeaderOffset { get; set; }
 
         /// <summary>
         /// The <see cref="QbKey"/> corresponding to the file's type.
@@ -83,7 +108,17 @@ namespace GuitarHero
         /// If the <see cref="PakArchive"/> has a separate data (PAB) component,
         /// the offset is measured as if the files are concatenated together.
         /// </remarks>
-        public UInt32 FileOffset { get; internal set; }
+        internal UInt32 FileOffsetRelative { get; set; }
+
+        /// <summary>
+        /// The offset of this entry's file, measured in bytes from the start of
+        /// the PAK archive.
+        /// </summary>
+        /// <remarks>
+        /// If the <see cref="PakArchive"/> has a separate data (PAB) component,
+        /// the offset is measured as if the files are concatenated together.
+        /// </remarks>
+        public UInt32 FileOffset => FileOffsetRelative + HeaderOffset;
 
         /// <summary>
         /// The length of this entry's file, measured in bytes.
@@ -170,6 +205,8 @@ namespace GuitarHero
                 }
             }
         }
+
+        public uint HeaderLength => this._embeddedFilename == null ? 0x20u : 0xC0u;
     }
 
     [Flags]

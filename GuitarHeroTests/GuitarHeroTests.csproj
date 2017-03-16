@@ -67,6 +67,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="PakArchiveTests.cs" />
     <Compile Include="PakEntryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QbKeyTests.cs" />
@@ -80,8 +81,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Samples\PakEntryEmbeddedName.dat" />
-    <EmbeddedResource Include="Samples\PakEntryNoEmbeddedName.dat" />
+    <EmbeddedResource Include="Samples\PakEntry\EmbeddedName.dat" />
+    <EmbeddedResource Include="Samples\PakEntry\NoEmbeddedName.dat" />
+    <EmbeddedResource Include="Samples\PakArchive\SmallNoPab.pak.xen" />
+    <EmbeddedResource Include="Samples\PakArchive\SmallWithPab.pab.xen" />
+    <EmbeddedResource Include="Samples\PakArchive\SmallWithPab.pak.xen" />
+    <EmbeddedResource Include="Samples\PakArchive\LargeNoPab.pak.xen" />
+    <EmbeddedResource Include="Samples\PakArchive\LargeWithPab.pab.xen" />
+    <EmbeddedResource Include="Samples\PakArchive\LargeWithPab.pak.xen" />
   </ItemGroup>
   <ItemGroup />
   <Choose>

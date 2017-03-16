@@ -13,7 +13,7 @@ namespace GuitarHero.Tests
         {
             PakEntry entry;
 
-            using (var sample = TestHelpers.OpenSample("PakEntryNoEmbeddedName.dat"))
+            using (var sample = TestHelpers.OpenSample("PakEntry.NoEmbeddedName.dat"))
             using (var br = new EndianBinaryReader(EndianBitConverter.Big, sample)) {
                 entry = PakEntry.ParseHeader(br, null);
             }
@@ -33,7 +33,7 @@ namespace GuitarHero.Tests
         public void ParseHeaderEmbeddedNameTest() {
             PakEntry entry;
 
-            using (var sample = TestHelpers.OpenSample("PakEntryEmbeddedName.dat"))
+            using (var sample = TestHelpers.OpenSample("PakEntry.EmbeddedName.dat"))
             using (var br = new EndianBinaryReader(EndianBitConverter.Big, sample))
             {
                 entry = PakEntry.ParseHeader(br, null);
