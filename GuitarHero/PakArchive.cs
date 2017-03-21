@@ -153,5 +153,10 @@ namespace GuitarHero
             Dispose(true);
         }
         #endregion
+
+        public void UpdateEntry(PakEntry pakEntry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
