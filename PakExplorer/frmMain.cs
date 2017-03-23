@@ -24,7 +24,12 @@ namespace GuitarHero.PakExplorer
             if (dialogResult == DialogResult.OK)
             {
                 var oldArchive = this.openArchive;
-                this.openArchive = PakFile.Open(this.openFileDialog.FileName);
+                try {
+                    this.openArchive = PakFile.Open(this.openFileDialog.FileName);
+                }
+                catch (UnauthorizedAccessException ex) {
+                    MessageBox.Show(@"Please run as administrator!");
+                }
                 oldArchive?.Dispose();
                 populateListView();
             }
