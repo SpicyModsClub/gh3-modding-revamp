@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,12 +31,15 @@ namespace GuitarHero
                 PakEntry entry;
                 QbKey lastKey = new QbKey(".last");
 
+                this.updateSuspended = true;
                 do
                 {
                     entry = PakEntry.ParseHeader(br, this);
                     this.entries.Add(entry);
                 }
                 while (!entry.FileType.Equals(lastKey));
+
+                this.updateSuspended = false;
 
                 this.entries.RemoveAt(this.entries.Count - 1);
                 this.terminator = entry;
@@ -60,6 +64,9 @@ namespace GuitarHero
         {
             var type = Path.GetExtension(filePath);
             var shortName = Path.GetFileNameWithoutExtension(filePath);
+
+            this.updateSuspended = true;
+
             PakEntry newEntry = new PakEntry(this)
                                 {
                                     HeaderOffset = this.terminator.HeaderOffset,
@@ -77,16 +84,8 @@ namespace GuitarHero
                 newEntry.FileFullNameKey = new QbKey(filePath);
             }
 
-            this.terminator.HeaderOffset += newEntry.HeaderLength;
-            this.terminator.FileOffsetRelative -= newEntry.HeaderLength;
-
-            if (this.terminator.HeaderOffset + this.terminator.HeaderLength > this.Entries[0].FileOffset)
-            {
-                var delta = this.extendHeadersRegion();
-                newEntry.FileOffsetRelative += delta;
-            }
-
             this.entries.Add(newEntry);
+            moveEntriesAfter(this.entries.Count, (int)newEntry.HeaderLength);
             this.pakStream.Position = newEntry.HeaderOffset;
 
             using (var bw = new EndianBinaryWriter(EndianBitConverter.Big, new NonClosingStreamWrapper(this.pakStream)))
@@ -95,10 +94,34 @@ namespace GuitarHero
                 this.terminator.WriteHeaderTo(bw);
             }
 
+            this.updateSuspended = false;
+
             return newEntry;
         }
 
-        private uint extendHeadersRegion()
+        // This should be called with this.updateSuspended == true.  It cannot function without it so 
+        // it sets it anyway.
+        private void moveEntriesAfter(int index, int offset)
+        {
+            Debug.Assert(this.updateSuspended, "moveEntriesAfter was called without updates suspended");
+            this.updateSuspended = true;
+            if (offset == 0) return;
+
+            for (int i = index + 1; i < entries.Count; i++)
+            {
+                // += doesn't work because of the long-uint implicit conversions
+                this.entries[i].HeaderOffset = (uint) (this.entries[i].HeaderOffset + offset);
+            }
+
+            this.terminator.HeaderOffset = (uint) (this.terminator.HeaderOffset + offset);
+
+            if (this.terminator.HeaderOffset + this.terminator.HeaderLength > this.dataOffset)
+            {
+                this.extendHeadersRegion();
+            }
+        }
+
+        private void extendHeadersRegion()
         {
             uint minDataOffset = this.terminator.HeaderOffset + this.terminator.HeaderLength;
             uint newDataOffset = 0x1000 * (uint)Math.Ceiling(minDataOffset / (double)0x1000);
@@ -128,13 +151,12 @@ namespace GuitarHero
 
             this.dataOffset = newDataOffset;
             this.terminator.FileOffsetRelative += 0x1000;
-
-            return dataOffsetDelta;
         }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
+        private bool updateSuspended = false;
 
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
@@ -156,7 +178,27 @@ namespace GuitarHero
 
         public void UpdateEntry(PakEntry pakEntry)
         {
-            throw new NotImplementedException();
+            if (updateSuspended) return;
+
+            var index = entries.FindIndex(x => x.HeaderOffset == pakEntry.HeaderOffset);
+            var nextHeaderPos = index == entries.Count
+                                    ? this.terminator.HeaderOffset
+                                    : this.entries[index + 1].HeaderOffset;
+            var oldLength = nextHeaderPos - pakEntry.HeaderOffset;
+
+            if (oldLength != pakEntry.HeaderLength)
+            {
+                this.updateSuspended = true;
+                moveEntriesAfter(index, (int)pakEntry.HeaderLength - (int)oldLength);
+                this.updateSuspended = false;
+            }
+
+            this.pakStream.Position = pakEntry.HeaderOffset;
+
+            using (var bw = new EndianBinaryWriter(EndianBitConverter.Big, new NonClosingStreamWrapper(this.pakStream)))
+            {
+                pakEntry.WriteHeaderTo(bw);
+            }
         }
     }
 }

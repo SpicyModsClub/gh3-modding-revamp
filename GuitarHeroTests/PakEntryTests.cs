@@ -1,4 +1,6 @@
-﻿using MiscUtil.Conversion;
+﻿using System.IO;
+
+using MiscUtil.Conversion;
 using MiscUtil.IO;
 
 using NUnit.Framework;
@@ -8,6 +10,29 @@ namespace GuitarHero.Tests
     [TestFixture]
     public class PakEntryTests
     {
+        private Stream smallArchiveStream;
+        private PakArchive smallArchive;
+        private Stream largeArchiveStream;
+        private PakArchive largeArchive;
+
+        [SetUp]
+        public void PakEntryTestSetUp()
+        {
+            this.smallArchiveStream = TestHelpers.CreateTempCopy("PakArchive.SmallNoPab.pak.xen");
+            this.largeArchiveStream = TestHelpers.CreateTempCopy("PakArchive.LargeNoPab.pak.xen");
+            this.smallArchive = new PakArchive(this.smallArchiveStream);
+            this.largeArchive = new PakArchive(this.largeArchiveStream);
+        }
+
+        [TearDown]
+        public void PakEntryTestTearDown()
+        {
+            this.smallArchive.Dispose();
+            this.largeArchive.Dispose();
+            this.smallArchiveStream.Dispose();
+            this.largeArchiveStream.Dispose();
+        }
+
         [Test]
         public void ParseHeaderNoEmbeddedNameTest()
         {
@@ -157,6 +182,22 @@ namespace GuitarHero.Tests
             Assert.AreEqual(new QbKey(@"path\to\test_filename"), entry.FileFullNameKey);
             Assert.AreEqual(new QbKey("test_filename"), entry.FileShortNameKey);
             Assert.AreEqual(new QbKey(0), entry.EmbeddedFilenameKey);
+        }
+
+        [Test]
+        public void SetEmbeddedNameMoveLaterHeadersTest()
+        {
+            this.smallArchive.Entries[0].EmbeddedFilename = "lol";
+
+            Assert.AreEqual(0xC0, this.smallArchive.Entries[1].HeaderOffset);
+        }
+
+        [Test]
+        public void SetEmbeddedNameMoveLaterHeadersTest2()
+        {
+            this.largeArchive.Entries[0].EmbeddedFilename = "lol";
+            Assert.AreEqual(0xC0, this.largeArchive.Entries[1].HeaderOffset);
+            Assert.AreEqual(0x2000, this.largeArchive.Entries[0].FileOffset);
         }
     }
 }

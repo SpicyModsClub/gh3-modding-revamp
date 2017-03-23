@@ -22,7 +22,7 @@ namespace GuitarHero
         private uint _unknown;
         #endregion
 
-        private uint headerOffset;
+        private uint _headerOffset;
 
         private PakArchive sourceArchive;
 
@@ -66,7 +66,7 @@ namespace GuitarHero
 
         private void NotifyArchive()
         {
-            this.sourceArchive.UpdateEntry(this);
+            this.sourceArchive?.UpdateEntry(this);
         }
 
         internal static PakEntry ParseHeader(EndianBinaryReader br, PakArchive sourceArchive)
@@ -134,11 +134,13 @@ namespace GuitarHero
         {
             get
             {
-                return this.headerOffset;
+                return this._headerOffset;
             }
             set
             {
-                this.headerOffset = value;
+                var absoluteOffset = FileOffset;
+                this._headerOffset = value;
+                this._fileOffsetRelative = absoluteOffset - this._headerOffset;
             }
         }
 
